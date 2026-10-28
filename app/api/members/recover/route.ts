@@ -19,7 +19,7 @@ export async function POST(r: Request) {
           .toLowerCase()
           .regex(/^[a-z0-9_]{3,24}$/),
         recoveryCode: z.string().min(20).max(100),
-        password: z.string().min(12).max(128),
+        password: z.string().min(7).max(128),
       })
       .parse(await body(r));
     await throttle(r, "recover", x.username, 5, 1800000);

@@ -399,12 +399,12 @@ export default function Account() {
                         mode === "login" ? "current-password" : "new-password"
                       }
                       required
-                      minLength={mode === "login" ? 1 : 12}
+                      minLength={mode === "login" ? 1 : 7}
                       maxLength={128}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={
-                        mode === "login" ? "你的登录密码" : "至少 12 个字符"
+                        mode === "login" ? "你的登录密码" : "至少 7 个字符"
                       }
                     />
                   </label>
@@ -416,7 +416,7 @@ export default function Account() {
                         type="password"
                         autoComplete="new-password"
                         required
-                        minLength={12}
+                        minLength={7}
                         maxLength={128}
                         value={confirm}
                         onChange={(e) => setConfirm(e.target.value)}

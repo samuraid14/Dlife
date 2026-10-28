@@ -16,7 +16,7 @@ const input = z.object({
     .trim()
     .toLowerCase()
     .regex(/^[a-z0-9_]{3,24}$/, "用户名为 3–24 位字母、数字或下划线"),
-  password: z.string().min(12, "密码至少需要 12 个字符").max(128),
+  password: z.string().min(7, "密码至少需要 7 个字符").max(128),
   inviteCode: z.string().max(100).default(""),
   setup: z.boolean().default(false),
 });

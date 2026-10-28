@@ -33,7 +33,7 @@ export function memberAuth() {
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
-      minPasswordLength: 12,
+      minPasswordLength: 7,
       maxPasswordLength: 128,
     },
     plugins: [
