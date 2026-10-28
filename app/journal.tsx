@@ -1,4 +1,5 @@
 "use client";
+import DesktopInstall from "./desktop-install";
 import {
   useEffect,
   useState,
@@ -416,7 +417,13 @@ function Curve({
     </div>
   );
 }
-export default function Journal({ signedIn }: { signedIn: boolean }) {
+export default function Journal({
+  signedIn,
+  loginMode,
+}: {
+  signedIn: boolean;
+  loginMode?: "member" | "chatgpt";
+}) {
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
   const [view, setView] = useState("timeline"),
@@ -699,19 +706,35 @@ export default function Journal({ signedIn }: { signedIn: boolean }) {
   useEffect(() => {
     if (!composer) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !busy && !uploading) setComposer(false);
-      if (e.key === 'Tab') {
+      if (e.key === "Escape" && !busy && !uploading) setComposer(false);
+      if (e.key === "Tab") {
         const dialog = document.querySelector('[role="dialog"]');
-        const items = Array.from(dialog?.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([type="file"]):not([disabled]),textarea,select') || []);
-        const first = items[0], last = items[items.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
-        if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        const items = Array.from(
+          dialog?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]),input:not([type="file"]):not([disabled]),textarea,select',
+          ) || [],
+        );
+        const first = items[0],
+          last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        }
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
       }
     };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, [composer, busy, uploading]);
-  if (!ready) return <div className="startup" role="status">Dlife · 拾光<span>正在打开你的生活空间…</span></div>;
+  if (!ready)
+    return (
+      <div className="startup" role="status">
+        Dlife · 拾光<span>正在打开你的生活空间…</span>
+      </div>
+    );
   const nav = [
     { id: "timeline", icon: BookOpen, label: "我的生活" },
     { id: "curve", icon: Activity, label: "记忆曲线" },
@@ -765,7 +788,11 @@ export default function Journal({ signedIn }: { signedIn: boolean }) {
             </div>
             {signedIn && (
               <a
-                href="/signout-with-chatgpt?return_to=%2F"
+                href={
+                  loginMode === "member"
+                    ? "/account?logout=1"
+                    : "/signout-with-chatgpt?return_to=%2F"
+                }
                 target="_top"
                 title="退出登录"
               >
@@ -781,6 +808,10 @@ export default function Journal({ signedIn }: { signedIn: boolean }) {
             我的空间 <span>/</span> {nav.find((n) => n.id === view)?.label}
           </span>
           <div className="top-actions">
+            <DesktopInstall />
+            <a href="/account" className="text-button account-nav">
+              账号与邀请
+            </a>
             <span className="private">
               <LockKeyhole size={12} />
               仅自己可见
@@ -791,11 +822,7 @@ export default function Journal({ signedIn }: { signedIn: boolean }) {
                 记录此刻
               </button>
             ) : (
-              <a
-                className="primary small"
-                href="/signin-with-chatgpt?return_to=%2F"
-                target="_top"
-              >
+              <a className="primary small" href="/account" target="_top">
                 开启我的空间
                 <ArrowUpRight size={14} />
               </a>
@@ -855,11 +882,7 @@ export default function Journal({ signedIn }: { signedIn: boolean }) {
                 <strong>在这里，生活是唯一的主角。</strong>
                 <p>登录后保存文字、照片、视频和心情，慢慢收集自己的日常。</p>
               </div>
-              <a
-                href="/signin-with-chatgpt?return_to=%2F"
-                target="_top"
-                className="primary"
-              >
+              <a href="/account" target="_top" className="primary">
                 开始记录
                 <ArrowUpRight size={15} />
               </a>

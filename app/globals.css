@@ -2244,4 +2244,289 @@ input[type="color"] {
   }
 }
 
-.startup{min-height:100vh;background:#101110;color:#c6d5a4;display:flex;flex-direction:column;align-items:center;justify-content:center;font:24px -apple-system,sans-serif;gap:18px}.startup span{font-size:12px;color:#969c90}
+.startup {
+  min-height: 100vh;
+  background: #101110;
+  color: #c6d5a4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font:
+    24px -apple-system,
+    sans-serif;
+  gap: 18px;
+}
+.startup span {
+  font-size: 12px;
+  color: #969c90;
+}
+
+.account-shell {
+  --accent: #c6d5a4;
+  --border: #ffffff18;
+  --soft: #ffffff08;
+  --text: #eceee8;
+  --bg: #101110;
+  --muted: #969c90;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  padding: 30px 24px 45px;
+  font:
+    14px/1.8 -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    sans-serif;
+}
+.account-top {
+  display: flex;
+  max-width: 1000px;
+  margin: 0 auto 25px;
+  align-items: center;
+  justify-content: space-between;
+}
+.account-brand {
+  font-size: 20px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  display: block;
+  max-width: 1000px;
+  margin: auto;
+}
+.account-card {
+  max-width: 530px;
+  margin: 25px auto 0;
+  padding: 33px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: #ffffff03;
+}
+.account-back {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.account-card h1 {
+  font-size: 25px;
+  line-height: 1.6;
+  font-weight: 400;
+  margin: 12px 0;
+}
+.account-card h2 {
+  font-size: 17px;
+  font-weight: 400;
+  margin: 28px 0 10px;
+}
+.account-card p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.account-form {
+  margin-top: 27px;
+}
+.account-form > label {
+  margin-bottom: 18px;
+}
+.account-form input {
+  font-size: 13px !important;
+  padding: 12px !important;
+}
+.account-wide {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+}
+.account-switch {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+}
+.account-switch button,
+.legacy-login {
+  font-size: 11px;
+  color: var(--muted);
+}
+.legacy-login {
+  display: block;
+  text-align: center;
+  margin-top: 28px;
+}
+.account-error {
+  padding: 12px 14px;
+  background: #bf725b13;
+  border: 1px solid #bf725b44;
+  border-radius: 7px;
+  color: #e6b8a9 !important;
+  margin-top: 20px;
+}
+.owner-setup {
+  border-top: 1px solid var(--border);
+  margin-top: 28px;
+  padding-top: 24px;
+}
+.owner-setup strong {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--accent);
+}
+.owner-setup .secondary {
+  font-size: 11px;
+}
+.account-action-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 22px 0;
+}
+.secret-code {
+  display: block;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  background: #c6d5a409;
+  color: var(--accent);
+  font-size: 13px;
+  line-height: 2;
+  padding: 16px;
+  border: 1px solid #c6d5a42a;
+  border-radius: 8px;
+  user-select: all;
+  margin: 20px 0;
+}
+.invite-manager {
+  border-top: 1px solid var(--border);
+  margin-top: 32px;
+}
+.invite-manager form {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin-top: 24px;
+}
+.invite-manager form label {
+  flex: 1;
+}
+.invite-manager form button {
+  margin-bottom: 1px;
+  white-space: nowrap;
+}
+.invite-result {
+  margin-top: 25px;
+  background: var(--soft);
+  padding: 18px;
+  border-radius: 10px;
+}
+.invite-result .secret-code {
+  margin: 12px 0;
+}
+.invite-list {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0;
+}
+.invite-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+.invite-list strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+.invite-list small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+.account-help {
+  font-size: 10px !important;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 24px !important;
+}
+.account-bottom {
+  text-align: center;
+  font-size: 10px;
+  color: var(--muted);
+  margin: 26px 0;
+}
+.install-guide {
+  max-width: 590px;
+}
+.install-guide > img {
+  border-radius: 16px;
+}
+.install-guide li {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 5px 0;
+}
+.install-guide ol {
+  padding-left: 19px;
+}
+.install-guide .install-link {
+  display: inline-flex;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 10px 0;
+}
+.desktop-installed {
+  font-size: 10px;
+  color: var(--muted);
+}
+.top-actions .install-link,
+.account-nav {
+  font-size: 10px;
+  white-space: nowrap;
+}
+@media (max-width: 740px) {
+  .account-shell {
+    padding: 22px 16px;
+  }
+  .account-card {
+    padding: 25px 21px;
+    margin-top: 24px;
+  }
+  .account-card h1 {
+    font-size: 23px;
+  }
+  .account-top .account-brand {
+    margin: 0;
+    font-size: 16px;
+  }
+  .account-top > .text-button {
+    font-size: 10px;
+  }
+  .top-actions {
+    gap: 12px;
+  }
+  .top-actions .install-link {
+    display: none;
+  }
+  .top-actions .account-nav {
+    font-size: 9px;
+  }
+  .topbar .breadcrumb {
+    font-size: 9px;
+  }
+  .topbar .breadcrumb:before {
+    margin-right: 10px;
+  }
+  .invite-manager form {
+    display: block;
+  }
+  .invite-manager form button {
+    margin-top: 12px;
+  }
+  .account-switch button {
+    font-size: 10px;
+  }
+}

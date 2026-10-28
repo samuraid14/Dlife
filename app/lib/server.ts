@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { getChatGPTUser } from "../chatgpt-auth";
+import { currentAppUser } from "./member-auth";
 import { z } from "zod";
 export const dateSchema = z
   .string()
@@ -22,7 +22,7 @@ export function bucket() {
   return env.BUCKET;
 }
 export async function identity(request: Request) {
-  const user = await getChatGPTUser();
+  const user = await currentAppUser();
   if (!user)
     throw new Response(
       JSON.stringify({ error: "请先登录，再保存你的生活记录。" }),

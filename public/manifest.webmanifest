@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "Dlife · 拾光",
+  "short_name": "Dlife",
+  "description": "记录生活、每日心情与精灵陪伴的私人空间。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101110",
+  "theme_color": "#101110",
+  "icons": [
+    {"src":"/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"/icons/maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}
