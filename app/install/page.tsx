@@ -3,7 +3,7 @@ export default function Install() {
   return (
     <main className="account-shell">
       <a href="/" className="account-brand">
-        Dlife · 拾光
+        dlife日志
       </a>
       <section className="account-card install-guide">
         <img src="/icons/icon-192.png" alt="Dlife" width={64} height={64} />

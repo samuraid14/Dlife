@@ -178,7 +178,7 @@ export default function Account() {
     <main className="account-shell">
       <header className="account-top">
         <a href="/" className="account-brand">
-          Dlife · 拾光
+          dlife日志
         </a>
         <a href="/install" className="text-button">
           安装桌面版

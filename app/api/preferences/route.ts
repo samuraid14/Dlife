@@ -4,17 +4,11 @@ const color = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 const schema = z.object({
   displayName: z.string().max(30).default(""),
   subtitle: z.string().max(100).default("把日子过成自己的样子。"),
-  background: color.default("#101110"),
-  accent: color.default("#c6d5a4"),
-  font: z.enum(["sans", "serif"]).default("sans"),
+  background: color.default("#eee5d5"),
+  accent: color.default("#84604b"),
+  font: z.enum(["sans", "serif"]).default("serif"),
   layout: z.enum(["comfortable", "compact"]).default("comfortable"),
-  pet: z.object({
-    name: z.string().min(1).max(20),
-    kind: z.enum(["spirit", "cat", "bunny"]),
-    color: color,
-    seed: z.number().int().min(0).max(999999),
-    personality: z.enum(["温柔倾听", "活泼元气", "安静陪伴"]),
-  }),
+  appearanceVersion: z.number().int().min(1).max(2).default(1),
 });
 export async function GET(r: Request) {
   return guard(async () => {

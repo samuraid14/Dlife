@@ -1,10 +1,10 @@
 "use client";
 import DesktopInstall from "./desktop-install";
+import { DrawingPad, PhotoEditor, type CreativeTool } from "./creative-tools";
 import {
   useEffect,
   useState,
   useRef,
-  useId,
   type CSSProperties,
   type FormEvent,
 } from "react";
@@ -12,7 +12,6 @@ import {
   BookOpen,
   CalendarDays,
   Activity,
-  Sparkles,
   Palette,
   Plus,
   ArrowUpRight,
@@ -22,17 +21,14 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Send,
   Check,
   LockKeyhole,
   Pencil,
   Trash2,
   Download,
-  Shuffle,
   Heart,
   LogOut,
   LoaderCircle,
-  ArrowLeft,
 } from "lucide-react";
 type Media = { key: string; name: string; type: "image" | "video" };
 type Entry = {
@@ -45,13 +41,6 @@ type Entry = {
   updated_at: string;
 };
 type Mood = { day: string; score: number };
-type Pet = {
-  name: string;
-  kind: "spirit" | "cat" | "bunny";
-  color: string;
-  seed: number;
-  personality: "温柔倾听" | "活泼元气" | "安静陪伴";
-};
 type Prefs = {
   displayName: string;
   subtitle: string;
@@ -59,23 +48,16 @@ type Prefs = {
   accent: string;
   font: "sans" | "serif";
   layout: "comfortable" | "compact";
-  pet: Pet;
+  appearanceVersion: number;
 };
-type Message = { id: string; role: string; content: string };
 const DEFAULT: Prefs = {
   displayName: "",
-  subtitle: "把日子过成自己的样子。",
-  background: "#101110",
-  accent: "#c6d5a4",
-  font: "sans",
+  subtitle: "把平常的日子，一页一页写下来。",
+  background: "#eee5d5",
+  accent: "#84604b",
+  font: "serif",
   layout: "comfortable",
-  pet: {
-    name: "小光",
-    kind: "spirit",
-    color: "#d8e7b4",
-    seed: 9,
-    personality: "温柔倾听",
-  },
+  appearanceVersion: 2,
 };
 const faces = ["有点低落", "不太开心", "平平淡淡", "心情不错", "非常开心"];
 const date = (d = new Date()) =>
@@ -131,142 +113,6 @@ function Face({ score = 3, size = 25 }: { score?: number; size?: number }) {
         />
       )}
     </svg>
-  );
-}
-function PetArt({ pet, large = false }: { pet: Pet; large?: boolean }) {
-  const id = useId().replace(/:/g, "");
-  return (
-    <div className={"pet-art " + (large ? "large" : "")}>
-      <div className="pet-aura" style={{ background: pet.color }} />
-      <svg
-        role="img"
-        aria-label={`${pet.name}，${pet.kind === "cat" ? "猫咪" : pet.kind === "bunny" ? "兔子" : "小精灵"}`}
-        viewBox="0 0 240 220"
-      >
-        <defs>
-          <radialGradient id={id} cx="35%" cy="25%" r="85%">
-            <stop offset="0" stopColor="#fffef0" />
-            <stop offset=".5" stopColor={pet.color} />
-            <stop offset="1" stopColor={pet.color} stopOpacity=".65" />
-          </radialGradient>
-        </defs>
-        <ellipse
-          cx="120"
-          cy="194"
-          rx="47"
-          ry="7"
-          fill={pet.color}
-          opacity=".12"
-        />
-        <g className="pet-float">
-          {pet.kind === "bunny" && (
-            <>
-              <ellipse
-                cx="91"
-                cy="57"
-                rx="15"
-                ry="40"
-                transform="rotate(-13 91 57)"
-                fill={`url(#${id})`}
-              />
-              <ellipse
-                cx="147"
-                cy="57"
-                rx="15"
-                ry="40"
-                transform="rotate(13 147 57)"
-                fill={`url(#${id})`}
-              />
-            </>
-          )}
-          {pet.kind === "cat" && (
-            <>
-              <path
-                d="M65 92L69 40L111 74M130 74L172 40L176 95"
-                fill={`url(#${id})`}
-              />
-            </>
-          )}
-          {pet.kind === "spirit" && (
-            <path
-              d="M108 74Q88 41 107 35Q113 51 130 55Q143 33 153 42Q157 54 142 72"
-              fill={`url(#${id})`}
-            />
-          )}
-          <path
-            d="M58 123C58 88 79 68 119 68C161 68 182 89 182 122C182 153 162 178 148 177C138 177 139 169 128 173C114 185 105 177 97 174C84 185 58 158 58 123Z"
-            fill={`url(#${id})`}
-          />
-          <ellipse
-            cx="57"
-            cy="140"
-            rx="11"
-            ry="20"
-            transform="rotate(27 57 140)"
-            fill={pet.color}
-          />
-          <ellipse
-            cx="181"
-            cy="140"
-            rx="11"
-            ry="20"
-            transform="rotate(-27 181 140)"
-            fill={pet.color}
-          />
-          <g className="pet-eyes">
-            <ellipse
-              cx={97 + (pet.seed % 4)}
-              cy="121"
-              rx="4.7"
-              ry="6.3"
-              fill="#333c2a"
-            />
-            <ellipse
-              cx={141 - (pet.seed % 4)}
-              cy="121"
-              rx="4.7"
-              ry="6.3"
-              fill="#333c2a"
-            />
-            <circle cx="98" cy="119" r="1.4" fill="white" />
-            <circle cx="140" cy="119" r="1.4" fill="white" />
-          </g>
-          <ellipse
-            cx="83"
-            cy="138"
-            rx="10"
-            ry="5"
-            fill="#db9391"
-            opacity=".35"
-          />
-          <ellipse
-            cx="155"
-            cy="138"
-            rx="10"
-            ry="5"
-            fill="#db9391"
-            opacity=".35"
-          />
-          <path
-            d={
-              pet.seed % 2
-                ? "M111 138Q119 148 127 138"
-                : "M113 139Q119 144 125 139"
-            }
-            fill="none"
-            stroke="#4c563e"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-        </g>
-        <g fill={pet.color} className="pet-stars">
-          <path d="M39 65l2-6 2 6 6 2-6 2-2 6-2-6-6-2z" />
-          <path d="M195 96l2-5 2 5 5 2-5 2-2 5-2-5-5-2z" />
-          <circle cx="54" cy="172" r="2" />
-          <circle cx="193" cy="48" r="2" />
-        </g>
-      </svg>
-    </div>
   );
 }
 function Curve({
@@ -431,18 +277,15 @@ export default function Journal({
     [prefDraft, setPrefDraft] = useState<Prefs>(DEFAULT),
     [entries, setEntries] = useState<Entry[]>([]),
     [moods, setMoods] = useState<Mood[]>([]),
-    [messages, setMessages] = useState<Message[]>([]),
     [loading, setLoading] = useState(signedIn),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false),
     [uploading, setUploading] = useState(false),
-    [chatBusy, setChatBusy] = useState(false),
-    [chatText, setChatText] = useState(""),
-    [chatError, setChatError] = useState(""),
     [query, setQuery] = useState(""),
     [filter, setFilter] = useState(""),
     [range, setRange] = useState(7),
     [composer, setComposer] = useState(false),
+    [creative, setCreative] = useState<CreativeTool | null>(null),
     [entryDay, setEntryDay] = useState(date()),
     [title, setTitle] = useState(""),
     [content, setContent] = useState(""),
@@ -453,9 +296,7 @@ export default function Journal({
     [month, setMonth] = useState(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     );
-  const fileRef = useRef<HTMLInputElement>(null),
-    chatEnd = useRef<HTMLDivElement>(null),
-    mounted = useRef(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const current = view === "customize" ? prefDraft : prefs;
   const rgb = current.background.match(/\w\w/g)!.map((x) => parseInt(x, 16));
   const light = rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114 > 160;
@@ -488,16 +329,17 @@ export default function Journal({
   useEffect(() => {
     if (!signedIn) return;
     let alive = true;
-    Promise.all([api("entries"), api("moods"), api("preferences"), api("chat")])
-      .then(([e, m, p, c]) => {
+    Promise.all([api("entries"), api("moods"), api("preferences")])
+      .then(([e, m, p]) => {
         if (!alive) return;
         setEntries(e.entries);
         setMoods(m.moods);
         if (p.preferences) {
-          setPrefs(p.preferences);
-          setPrefDraft(p.preferences);
+          const loaded = { ...DEFAULT, ...p.preferences };
+          if (p.preferences.appearanceVersion !== 2) Object.assign(loaded, { background: DEFAULT.background, accent: DEFAULT.accent, font: DEFAULT.font, appearanceVersion: 2 });
+          setPrefs(loaded);
+          setPrefDraft(loaded);
         }
-        setMessages(c.messages);
       })
       .catch((e) => setNotice(e.message))
       .finally(() => {
@@ -513,13 +355,6 @@ export default function Journal({
       return () => clearTimeout(timer);
     }
   }, [notice]);
-  useEffect(() => {
-    if (mounted.current && view === "pet")
-      chatEnd.current?.parentElement?.scrollTo({
-        top: chatEnd.current.parentElement.scrollHeight,
-      });
-    mounted.current = true;
-  }, [messages, chatBusy, view]);
   function go(v: string) {
     window.scrollTo(0, 0);
     setView(v);
@@ -542,11 +377,12 @@ export default function Journal({
     setEntryMood(
       moods.find((m) => m.day === (entry?.day || date()))?.score || null,
     );
+    setCreative(null);
     setComposer(true);
   }
   async function saveEntry(e: FormEvent) {
     e.preventDefault();
-    if (busy || uploading) return;
+    if (busy || uploading || creative) return;
     setBusy(true);
     try {
       await api("entries", "POST", {
@@ -588,6 +424,19 @@ export default function Journal({
     }
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
+  }
+  async function saveCreative(file: File, replaceKey?: string) {
+    if (!replaceKey && media.length >= 6) throw new Error("每篇日记最多 6 个附件，请先移除一个。");
+    if (file.size > 20 * 1024 * 1024) throw new Error("图片超过 20 MB，请减少画面内容后重试。");
+    setUploading(true);
+    try {
+      const form = new FormData(); form.append("file", file);
+      const r = await fetch("/api/media", { method: "POST", body: form });
+      const result = await r.json() as any;
+      if (!r.ok) throw new Error(result.error || "图片未能保存，请重试。");
+      setMedia(old => replaceKey ? old.map(m => m.key === replaceKey ? result : m) : [...old, result]);
+      setCreative(null);
+    } finally { setUploading(false); }
   }
   async function rate(score: number) {
     if (needLogin()) return;
@@ -636,37 +485,6 @@ export default function Journal({
       setBusy(false);
     }
   }
-  async function savePet(pet: Pet) {
-    const p = { ...prefs, pet };
-    try {
-      await api("preferences", "POST", p);
-      setPrefs(p);
-      setPrefDraft(p);
-      setNotice("小精灵已经记住了自己的模样。");
-    } catch (e) {
-      setNotice((e as Error).message);
-    }
-  }
-  async function send(e: FormEvent) {
-    e.preventDefault();
-    if (needLogin() || chatBusy || !chatText.trim()) return;
-    const msg = chatText.trim();
-    setChatBusy(true);
-    setChatError("");
-    setChatText("");
-    const temp = "pending-" + Date.now();
-    setMessages((m) => [...m, { id: temp, role: "user", content: msg }]);
-    try {
-      const x = await api("chat", "POST", { message: msg });
-      setMessages((m) => [...m, x.message]);
-    } catch (e) {
-      setMessages((m) => m.filter((x) => x.id !== temp));
-      setChatText(msg);
-      setChatError((e as Error).message);
-    } finally {
-      setChatBusy(false);
-    }
-  }
   function exportData() {
     const blob = new Blob(
       [
@@ -676,7 +494,6 @@ export default function Journal({
             entries,
             moods,
             preferences: prefs,
-            messages,
           },
           null,
           2,
@@ -689,7 +506,7 @@ export default function Journal({
     a.download = "Dlife-records-" + date() + ".json";
     a.click();
     URL.revokeObjectURL(a.href);
-    setNotice("文字、评分、设置与聊天已导出；照片和视频请在记录中单独保存。");
+    setNotice("日记文字、评分和设置已导出；照片和视频请在记录中单独保存。");
   }
   const visible = entries.filter(
     (e) =>
@@ -706,7 +523,9 @@ export default function Journal({
   useEffect(() => {
     if (!composer) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !busy && !uploading) setComposer(false);
+      if (e.key === "Escape" && !busy && !uploading) {
+        if (creative) setCreative(null); else setComposer(false);
+      }
       if (e.key === "Tab") {
         const dialog = document.querySelector('[role="dialog"]');
         const items = Array.from(
@@ -728,18 +547,17 @@ export default function Journal({
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [composer, busy, uploading]);
+  }, [composer, busy, uploading, creative]);
   if (!ready)
     return (
       <div className="startup" role="status">
-        Dlife · 拾光<span>正在打开你的生活空间…</span>
+        dlife日志<span>正在打开你的生活空间…</span>
       </div>
     );
   const nav = [
-    { id: "timeline", icon: BookOpen, label: "我的生活" },
+    { id: "timeline", icon: BookOpen, label: "我的日记" },
     { id: "curve", icon: Activity, label: "记忆曲线" },
-    { id: "pet", icon: Sparkles, label: "我的小精灵" },
-    { id: "customize", icon: Palette, label: "装扮空间" },
+    { id: "customize", icon: Palette, label: "日记装帧" },
   ];
   return (
     <div
@@ -748,14 +566,12 @@ export default function Journal({
     >
       <aside className="sidebar">
         <a className="brand" href="/" aria-label="Dlife 首页">
-          <span className="brand-mark">
-            d<span>•</span>
-          </span>
+          <span className="brand-mark"><BookOpen size={27} strokeWidth={1.3}/></span>
           <span>
-            Dlife<span className="brand-cn">拾光</span>
+            dlife<span className="brand-cn">日志</span>
           </span>
         </a>
-        <div className="space-label">MY LITTLE UNIVERSE</div>
+        <div className="space-label">A PERSONAL JOURNAL</div>
         <nav>
           {nav.map((n) => (
             <button
@@ -784,7 +600,7 @@ export default function Journal({
             </span>
             <div>
               <strong>{prefs.displayName || "我的小小宇宙"}</strong>
-              <small>{signedIn ? "私人生活空间" : "从今天，开始记录"}</small>
+              <small>{signedIn ? "私人日记本" : "从今天，开始记录"}</small>
             </div>
             {signedIn && (
               <a
@@ -819,7 +635,7 @@ export default function Journal({
             {signedIn ? (
               <button className="primary small" onClick={() => openComposer()}>
                 <Plus size={15} />
-                记录此刻
+                写日记
               </button>
             ) : (
               <a className="primary small" href="/account" target="_top">
@@ -834,32 +650,26 @@ export default function Journal({
             <div>
               <div className="eyebrow">
                 {view === "timeline"
-                  ? "A LITTLE LIFE, WELL REMEMBERED"
+                  ? "LET THE ORDINARY BECOME A STORY"
                   : view === "curve"
                     ? "EVERY FEELING HAS ITS PLACE"
-                    : view === "pet"
-                      ? "A LITTLE COMPANY, EVERY DAY"
-                      : "MAKE ROOM FOR YOURSELF"}
+                    : "THE ART OF KEEPING A JOURNAL"}
               </div>
               <h1>
                 {view === "timeline"
                   ? prefs.displayName
-                    ? prefs.displayName + " 的生活碎片"
-                    : "生活，值得被记住。"
+                    ? prefs.displayName + " 的私人日记"
+                    : "日子慢慢，落笔成章。"
                   : view === "curve"
                     ? "每一种心情，都算数。"
-                    : view === "pet"
-                      ? "总有一束光，陪着你。"
-                      : "这是你的空间。"}
+                    : "给日记，选一身装帧。"}
               </h1>
               <p>
                 {view === "timeline"
                   ? prefs.subtitle
                   : view === "curve"
                     ? "看见情绪的起伏，也看见一路走来的自己。"
-                    : view === "pet"
-                      ? "给它一个名字、一种模样，再聊聊今天。"
-                      : "从颜色到留白，让这里更像你。"}
+                    : "纸张、墨色与留白，都由你决定。"}
               </p>
             </div>
             <div className="today-stamp">
@@ -900,7 +710,7 @@ export default function Journal({
                   </span>
                   <span>
                     <strong>今天，想留下什么？</strong>
-                    <small>一句话、一张照片，或一个小小的瞬间。</small>
+                    <small>写几行字，贴一张照片，画出今天的心情。</small>
                   </span>
                   <Plus className="compose-plus" size={22} />
                   <span className="compose-footer">
@@ -916,6 +726,7 @@ export default function Journal({
                       <Heart size={15} />
                       心情
                     </span>
+                    <span><Pencil size={15}/>绘画</span>
                     <span className="compose-hint">
                       写下这一刻 <ArrowUpRight size={13} />
                     </span>
@@ -924,7 +735,7 @@ export default function Journal({
                 <div className="feed-tools">
                   <div className="section-title">
                     <span className="tiny-dot" />
-                    生活时间线 <span className="count">{entries.length}</span>
+                    日记目录 <span className="count">{entries.length}</span>
                   </div>
                   <div className="search">
                     <Search size={14} />
@@ -1216,27 +1027,7 @@ export default function Journal({
                     </button>
                   </div>
                 </section>
-                <section className="panel pet-card">
-                  <div className="section-title">
-                    <Sparkles size={14} />
-                    我的小精灵
-                    <span className="status-dot" />
-                  </div>
-                  <PetArt pet={prefs.pet} />
-                  <h3>{prefs.pet.name}</h3>
-                  <p>
-                    今天发生了什么？
-                    <br />
-                    我在这里，听你慢慢说。
-                  </p>
-                  <button className="secondary" onClick={() => go("pet")}>
-                    聊一会儿
-                    <ArrowUpRight size={14} />
-                  </button>
-                  <button className="pet-custom-link" onClick={() => go("pet")}>
-                    换一种模样
-                  </button>
-                </section>
+                <section className="journal-quote panel"><span className="eyebrow">A NOTE TO SELF</span><blockquote>不必每一天都精彩，<br/>每一页都可以是你。</blockquote><p>文字、照片，或一幅小画。<br/>用自己的方式，留下今天。</p><span className="quote-flourish">❧</span></section>
               </aside>
             </div>
           )}
@@ -1316,108 +1107,12 @@ export default function Journal({
               </div>
             </div>
           )}
-          {view === "pet" && (
-            <div className="pet-page">
-              <section className="panel pet-studio">
-                <div className="section-title">
-                  <Sparkles size={15} />
-                  精灵小屋<span className="soft-tag">可自由定制</span>
-                </div>
-                <PetArt pet={prefs.pet} large />
-                <div className="pet-studio-title">
-                  <h2>{prefs.pet.name}</h2>
-                  <span>{prefs.pet.personality}</span>
-                </div>
-                <PetEditor
-                  pet={prefs.pet}
-                  onSave={(p) => {
-                    if (!needLogin()) savePet(p);
-                  }}
-                />
-              </section>
-              <section className="panel chat-panel">
-                <div className="chat-head">
-                  <span className="chat-avatar">
-                    <Sparkles size={19} />
-                  </span>
-                  <div>
-                    <strong>和{prefs.pet.name}聊聊天</strong>
-                    <small>AI 陪伴 · 听你分享生活</small>
-                  </div>
-                </div>
-                <div className="chat-messages">
-                  {!messages.length && (
-                    <div className="chat-empty">
-                      <span>✦</span>
-                      <h3>从一句“你好”开始。</h3>
-                      <p>分享一件小事，或者只是在这里坐一会儿。</p>
-                      <div>
-                        {["今天有一件开心的事", "我有点累，想聊聊"].map((s) => (
-                          <button key={s} onClick={() => setChatText(s)}>
-                            {s}
-                            <ArrowUpRight size={12} />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {messages.map((m) => (
-                    <div className={"message " + m.role} key={m.id}>
-                      {m.role === "assistant" && (
-                        <span className="message-icon">✦</span>
-                      )}
-                      <p>{m.content}</p>
-                    </div>
-                  ))}
-                  {chatBusy && (
-                    <div className="message assistant">
-                      <span className="message-icon">✦</span>
-                      <p className="typing">● ● ●</p>
-                    </div>
-                  )}
-                  <div ref={chatEnd} />
-                </div>
-                {chatError && (
-                  <div className="chat-error" role="alert">
-                    {chatError}
-                  </div>
-                )}
-                <form className="chat-input" onSubmit={send}>
-                  <label className="sr-only" htmlFor="chat-message">
-                    给小精灵发消息
-                  </label>
-                  <input
-                    id="chat-message"
-                    maxLength={1500}
-                    value={chatText}
-                    onChange={(e) => setChatText(e.target.value)}
-                    placeholder="和我说说今天吧…"
-                    disabled={chatBusy}
-                  />
-                  <button
-                    type="submit"
-                    disabled={chatBusy || !chatText.trim()}
-                    aria-label="发送消息"
-                  >
-                    {chatBusy ? (
-                      <LoaderCircle size={17} className="spin" />
-                    ) : (
-                      <Send size={17} />
-                    )}
-                  </button>
-                </form>
-                <p className="chat-note">
-                  只会发送聊天内容，不会自动读取你的日记和附件。
-                </p>
-              </section>
-            </div>
-          )}
           {view === "customize" && (
             <div className="customize-page">
               <section className="panel settings-panel">
                 <div className="section-title">
                   <Palette size={16} />
-                  装扮我的空间
+                  装帧我的日记
                 </div>
                 <label>
                   空间主人
@@ -1447,10 +1142,10 @@ export default function Journal({
                   <legend>空间配色</legend>
                   <div className="theme-presets">
                     {[
-                      { name: "静夜黑", bg: "#101110", a: "#c6d5a4" },
-                      { name: "暖白纸", bg: "#f4f1e9", a: "#637446" },
-                      { name: "暮色蓝", bg: "#141c27", a: "#a7c7db" },
-                      { name: "莓果紫", bg: "#211923", a: "#d8b4cf" },
+                      { name: "旧书页", bg: "#eee5d5", a: "#84604b" },
+                      { name: "象牙纸", bg: "#f7f3e9", a: "#6c795b" },
+                      { name: "蓝墨笺", bg: "#e1e8e7", a: "#526c7b" },
+                      { name: "玫瑰笺", bg: "#eee0dc", a: "#966559" },
                     ].map((t) => (
                       <button
                         key={t.name}
@@ -1552,7 +1247,6 @@ export default function Journal({
                         ...DEFAULT,
                         displayName: prefDraft.displayName,
                         subtitle: prefDraft.subtitle,
-                        pet: prefDraft.pet,
                       })
                     }
                   >
@@ -1568,7 +1262,7 @@ export default function Journal({
                     ) : (
                       <Check size={15} />
                     )}
-                    保存装扮
+                    保存装帧
                   </button>
                 </div>
               </section>
@@ -1583,12 +1277,12 @@ export default function Journal({
                   <p>
                     当前页面正在实时预览你的选择。
                     <br />
-                    点「保存装扮」，下次回来还是你的样子。
+                    点「保存装帧」，下次回来还是你的样子。
                   </p>
                 </section>
                 <section className="panel data-panel">
                   <h3>把回忆握在自己手里</h3>
-                  <p>导出文字、每日评分、设置和聊天记录。附件需单独保存。</p>
+                  <p>导出日记文字、每日评分和设置。附件需单独保存。</p>
                   <button
                     className="secondary"
                     onClick={() => {
@@ -1603,7 +1297,7 @@ export default function Journal({
             </div>
           )}
           <footer className="page-footer">
-            <span>Dlife · 拾光</span>
+            <span>dlife日志</span>
             <span>生活是你的，空间也是。</span>
             <span>
               <LockKeyhole size={11} />
@@ -1640,7 +1334,7 @@ export default function Journal({
               <div>
                 <span className="eyebrow">A MOMENT TO KEEP</span>
                 <h2 id="composer-title">
-                  {editId ? "重新整理这一刻" : "留住一个生活瞬间"}
+                  {editId ? "重新整理这一页" : "翻开新的一页"}
                 </h2>
               </div>
               <button
@@ -1672,14 +1366,14 @@ export default function Journal({
               <input
                 className="title-input"
                 aria-label="记录标题"
-                placeholder="给这一刻取个名字（选填）"
+                placeholder="这一页的标题（选填）"
                 value={title}
                 maxLength={120}
                 onChange={(e) => setTitle(e.target.value)}
               />
               <textarea
                 autoFocus
-                aria-label="生活记录内容"
+                aria-label="日记正文"
                 placeholder="今天发生了什么？想到哪里，就写到哪里…"
                 value={content}
                 maxLength={12000}
@@ -1701,8 +1395,10 @@ export default function Journal({
                           preload="metadata"
                         />
                       )}
+                      {m.type === "image" && <button type="button" className="edit-photo" disabled={busy || uploading || !!creative} aria-label={`编辑照片：${m.name}`} onClick={() => setCreative({kind: "photo", key: m.key, name: m.name})}><Pencil size={13}/>编辑</button>}
                       <button
                         type="button"
+                        disabled={busy || uploading || !!creative}
                         aria-label={`移除${m.name}`}
                         onClick={() =>
                           setMedia((old) => old.filter((x) => x.key !== m.key))
@@ -1726,7 +1422,7 @@ export default function Journal({
                 <button
                   className="text-button"
                   type="button"
-                  disabled={uploading || media.length >= 6}
+                  disabled={busy || uploading || !!creative || media.length >= 6}
                   onClick={() => fileRef.current?.click()}
                 >
                   {uploading ? (
@@ -1736,8 +1432,11 @@ export default function Journal({
                   )}
                   添加照片 / 视频
                 </button>
+                <button type="button" className="text-button" disabled={busy || uploading || !!creative || media.length >= 6} onClick={() => setCreative({ kind: "drawing" })}><Pencil size={16}/>画下心情</button>
                 <span>最多 6 个 · 每个 20 MB</span>
               </div>
+              {creative?.kind === "photo" && <PhotoEditor key={creative.key} source={"/api/media?key=" + encodeURIComponent(creative.key)} name={creative.name} onClose={() => setCreative(null)} onSave={async file => { await saveCreative(file, creative.key); }}/>}
+              {creative?.kind === "drawing" && <DrawingPad onClose={() => setCreative(null)} onSave={async file => { await saveCreative(file); }}/>}
               <div className="composer-mood">
                 <span>
                   这一天的心情 <small>（选填）</small>
@@ -1771,6 +1470,7 @@ export default function Journal({
                   disabled={
                     busy ||
                     uploading ||
+                    !!creative ||
                     (!content.trim() && !title.trim() && !media.length)
                   }
                 >
@@ -1779,95 +1479,13 @@ export default function Journal({
                   ) : (
                     <Check size={16} />
                   )}
-                  保存这一刻
+                  收进日记
                 </button>
               </div>
             </form>
           </section>
         </div>
       )}
-    </div>
-  );
-}
-function PetEditor({ pet, onSave }: { pet: Pet; onSave: (p: Pet) => void }) {
-  const [draft, setDraft] = useState(pet);
-  useEffect(() => setDraft(pet), [pet]);
-  function random() {
-    const colors = ["#d8e7b4", "#d1b6e4", "#a4d6df", "#efc3a3", "#d6c5a1"];
-    const kinds: Pet["kind"][] = ["spirit", "cat", "bunny"];
-    const next = {
-      ...draft,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      kind: kinds[Math.floor(Math.random() * 3)],
-      seed: Math.floor(Math.random() * 999999),
-    };
-    setDraft(next);
-  }
-  return (
-    <div className="pet-editor">
-      <div className="pet-draft-preview">
-        <PetArt pet={draft} />
-      </div>
-      <label>
-        它的名字
-        <input
-          maxLength={20}
-          value={draft.name}
-          onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-        />
-      </label>
-      <fieldset>
-        <legend>精灵的模样</legend>
-        <div className="choice-row">
-          {(["spirit", "cat", "bunny"] as const).map((k, i) => (
-            <button
-              className={draft.kind === k ? "chosen" : ""}
-              key={k}
-              onClick={() => setDraft({ ...draft, kind: k })}
-            >
-              {["小光团", "小猫咪", "长耳兔"][i]}
-            </button>
-          ))}
-        </div>
-      </fieldset>
-      <div className="pet-color-row">
-        <label>
-          精灵颜色
-          <input
-            type="color"
-            value={draft.color}
-            onChange={(e) => setDraft({ ...draft, color: e.target.value })}
-          />
-        </label>
-        <button className="text-button" onClick={random}>
-          <Shuffle size={14} />
-          生成一只
-        </button>
-      </div>
-      <label>
-        陪伴的性格
-        <select
-          value={draft.personality}
-          onChange={(e) =>
-            setDraft({
-              ...draft,
-              personality: e.target.value as Pet["personality"],
-            })
-          }
-        >
-          {["温柔倾听", "活泼元气", "安静陪伴"].map((p) => (
-            <option key={p}>{p}</option>
-          ))}
-        </select>
-      </label>
-      <button
-        className="primary pet-save"
-        disabled={!draft.name.trim()}
-        onClick={() => onSave(draft)}
-      >
-        <Check size={15} />
-        让它成为我的小精灵
-      </button>
     </div>
   );
 }
